@@ -1,13 +1,11 @@
-from flask import jsonify, request, Flask
-import pymysql
 import random
+
+import pymysql
+from flask import jsonify, request, Flask
 
 app = Flask(__name__)
 connection = pymysql.connect(host='localhost', user='root', password='nigeriA070', db='banking', charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
-
-medical_conn = pymysql.connect(host='localhost', user='root', password='nigeriA070', db='medical', charset='utf8mb4',
-                               cursorclass=pymysql.cursors.DictCursor)
 
 
 def get_account():
@@ -185,52 +183,52 @@ def transaction_insert():
 # MEDICAL API's
 
 
-@app.route('/medical/login', methods=['GET'])
-def medical_login():
-    try:
-        username = request.args.get('username')
-        password = request.args.get('password')
+# @app.route('/medical/login', methods=['GET'])
+# def medical_login():
+#     try:
+#         username = request.args.get('username')
+#         password = request.args.get('password')
+#
+#         sql = "SELECT * FROM users WHERE username = %s AND password = %s"
+#         cursor = medical_conn.cursor()
+#         cursor.execute(sql, (username, password))
+#         result = cursor.fetchall()
+#
+#         if int(len(result)) > 0:
+#             name = str(result[0]['name'].encode('ascii', 'ignore'))
+#             return jsonify({'message': 'Login Successful', 'name': name, 'success': 1})
+#         else:
+#             return jsonify({'message': 'Invalid Login Details. Provide Authentic Login Credentials', 'success': 0})
+#     except Exception:
+#         return jsonify({'message': 'An Error Occurred. Try Again', 'success': 0})
 
-        sql = "SELECT * FROM users WHERE username = %s AND password = %s"
-        cursor = medical_conn.cursor()
-        cursor.execute(sql, (username, password))
-        result = cursor.fetchall()
 
-        if int(len(result)) > 0:
-            name = str(result[0]['name'].encode('ascii', 'ignore'))
-            return jsonify({'message': 'Login Successful', 'name': name, 'success': 1})
-        else:
-            return jsonify({'message': 'Invalid Login Details. Provide Authentic Login Credentials', 'success': 0})
-    except Exception:
-        return jsonify({'message': 'An Error Occurred. Try Again', 'success': 0})
-
-
-@app.route('/medical/register', methods=['GET'])
-def medical_register():
-    try:
-        username = request.args.get('username')
-        password = request.args.get('password')
-        full_name = request.args.get('name')
-        phone_number = request.args.get('phone_number')
-        address = request.args.get('address')
-
-        sql = "SELECT * FROM users WHERE username = %s"
-        cursor = medical_conn.cursor()
-        cursor.execute(sql, username)
-        result = cursor.fetchall()
-
-        if int(len(result)) > 0:
-            return jsonify({'message': 'Username already exists in Database. Provide a unique username', 'success': 0})
-        else:
-            sql = "INSERT INTO users(name, username, password, num, address) VALUES(%s, " \
-                  "%s, %s, %s, %s)"
-            # medical_conn.connect()
-            cursor = medical_conn.cursor()
-            cursor.execute(sql, (full_name, username, password, phone_number, address))
-            medical_conn.commit()
-            return jsonify({'message': 'Registration Successful', 'success': 1})
-    except Exception:
-        return jsonify({'message': 'An Error Occurred. Try Again', 'success': 0})
+# @app.route('/medical/register', methods=['GET'])
+# def medical_register():
+#     try:
+#         username = request.args.get('username')
+#         password = request.args.get('password')
+#         full_name = request.args.get('name')
+#         phone_number = request.args.get('phone_number')
+#         address = request.args.get('address')
+#
+#         sql = "SELECT * FROM users WHERE username = %s"
+#         cursor = medical_conn.cursor()
+#         cursor.execute(sql, username)
+#         result = cursor.fetchall()
+#
+#         if int(len(result)) > 0:
+#             return jsonify({'message': 'Username already exists in Database. Provide a unique username', 'success': 0})
+#         else:
+#             sql = "INSERT INTO users(name, username, password, num, address) VALUES(%s, " \
+#                   "%s, %s, %s, %s)"
+#             # medical_conn.connect()
+#             cursor = medical_conn.cursor()
+#             cursor.execute(sql, (full_name, username, password, phone_number, address))
+#             medical_conn.commit()
+#             return jsonify({'message': 'Registration Successful', 'success': 1})
+#     except Exception:
+#         return jsonify({'message': 'An Error Occurred. Try Again', 'success': 0})
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', debug=True)
